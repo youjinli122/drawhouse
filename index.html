@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>手绘户型图</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/ion.rangeSlider.css">
+	<link rel="stylesheet" href="css/draw.css">
+	
+	<script  type="text/javascript" src="js/build/jquery.js"></script>
+	<script  type="text/javascript" src="js/build/bootstrap.min.js"></script>
+	<script  type="text/javascript" src="js/build/three.min.js"></script>
+	<script  type="text/javascript" src="js/utils/FileSaver.min.js"></script>
+</head>
+<body>
+	<div class="container-fluid draw-container">
+		<div class="row">
+			<div class="col-xs-12 main">
+				<header class="header">
+					<div class="header-body">
+						<div class="header-content">
+							<div class="item" id="importJson"><span>导入</span><input type="file" id="files"></div>
+							<div class="item" id="J_export">导出</div>
+							<div class="item" id="J_undo"><span>撤销</span></div>
+							<div class="item" id="J_redo"><span>恢复</span></div>		
+							<div class="item" id="J_block">
+								<span>显示</span>
+								<div></div>
+							</div>
+							<div class="item">尺寸标记</div>
+							<div class="item clear">清空</div>
+							<div class="item sava">保存</div>
+						</div>
+					</div>
+				</header>
+				<canvas id="floorplanner-canvas"></canvas>
+				<canvas id="canvas2" ></canvas>
+				<div class="span-input-container">
+					
+				</div>
+			</div>
+		</div>
+		<div class="page-sidebar"  id="J_ctrlcanvas">
+			<div class="page-sidebar-content tab1 active">
+				<div class="root-body">
+					<div class="root-nav">
+						<div class="nav_body">
+							<div class="nav_content">
+								<div class="item_title">
+									<p>画</p>
+								</div>
+								<div class="item_title">
+									<p>画</p>
+								</div>
+								<div class="item_title">
+									<p>画</p>
+								</div>
+								<div class="item_title">
+									<p>画</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="root-sidebar">
+						<div class="sidebar-title weight-600 open-dialog"><p>选择单空间户型</p></div>
+						<div class="sidebar-title weight-600"><p>画户型</p></div>
+						<div class="row row-second">
+							<div class="row-title">画墙</div>
+							<div class="col-xs-4 draw" data="0"><p class="wall"></p><p class="word">画墙</p></div>
+							<div class="col-xs-4 draw" data="1"><p class="wall-room"></p><p class="word">画房间</p></div>
+						</div>
+						<div class="row row-second">
+							<div class="row-title">画分区</div>
+							<div class="col-xs-4 draw" data="2"><p class="wall"></p><p class="word">绘制分区</p></div>
+						</div>
+						<div class="row row-second">
+							<div class="row-title">门窗</div>
+							<div class="col-xs-4 draw" data="3"><p class="pic"><img src="image/dankaimen.png" alt="" /></p><p class="word">单开门</p></div>
+							<div class="col-xs-4 draw" data="4"><p class="pic"><img src="image/shuangkaimen.png" alt="" /></p><p class="word">双开门</p></div>
+							<div class="col-xs-4 draw" data="5"><p class="pic"><img src="image/tuilamen.png" alt="" /></p><p class="word">推拉门</p></div>
+							<div class="col-xs-4 draw" data="6"><p class="pic"><img src="image/chuang.png" alt="" /></p><p class="word">普通窗</p></div>
+							<div class="col-xs-4 draw" data="7"><p class="pic"><img src="image/luodi.png" alt="" /></p><p class="word">落地窗</p></div>
+							<div class="col-xs-4 draw" data="10"><p class="pic"><img src="image/piaochuang.png" alt="" /></p><p class="word">飘窗</p></div>
+							<div class="col-xs-4 draw" data="14"><p class="pic"><img src="image/yakou.png" alt="" /></p><p class="word">垭口</p></div>
+						</div>
+						<div class="sidebar-title weight-600">结构部件</div>
+						<div class="row row-three">
+							<div class="col-xs-4 draw" data="16"><div class="pic"><img src="image/btn_pillar_normal.png" alt="" /></div><p class="zhu">柱</p></div>
+							<div class="col-xs-4 draw" data="15"><div class="pic"><img src="image/btn_bridge_normal.png" alt="" />></p></div><p class="liang">梁</p></div>
+							<div class="col-xs-4 draw" data="19"><div class="pic"><img src="image/yandao.png" alt="" /></div><p class="mendong">烟道</p></div>
+							<div class="col-xs-4 draw" data="17"><div class="pic"><img src="image/dankaimen.png" alt="" /></div><p class="mendong">上水口</p></div>
+							<div class="col-xs-4 draw" data="18"><div class="pic"><img src="image/dankaimen.png" alt="" /></p></div><p class="mendong">下水口</p></div>
+						</div>
+					</div>	
+				</div>
+			</div>
+
+			<div class="page-sidebar-content tab2">
+				<div class="root-body-t">
+					<div class="root-sidebar" id="J_ctrlsiderbar"></div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<div style="position:absolute; top: 0px; left: 0px; width: 100%;">
+		<div>
+			<div class="popup-container h5-wrapping-popup">
+				<div class="popup-content"></div>
+			</div>
+		</div>
+	</div>
+
+	<div style="position:absolute; top: 0px; left: 0px; width: 100%;">
+		<div>
+			<div class="canvas-wrapper" id="J_dialog">
+				<div class="item-content">
+					<div class="item j_item" data="0"><img src="image/btn_delete3.png" alt=""></div>
+					<div class="item j_item" data="1"><img src="image/btn_break_normal.png" alt=""></div>
+					<div class="item j_item" data="2"><img src="image/rotate.png" alt=""></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="musk"></div>
+	<div class="dialog">
+		<div class="content-body">
+			<div class="header"><div class="close-dialog"><img src="image/X.png" alt=""></div></div>
+			<div class="content">
+				<div class="row">
+				  <div class="col-md-4" data="one"><img src="image/one.png" alt=""></div>
+				  <div class="col-md-4" data="two"><img src="image/two.png" alt=""></div>
+				  <div class="col-md-4" data="three"><img src="image/three.png" alt=""></div>
+				</div>
+				<div class="row">
+		  		  <div class="col-md-4" data="four"><img src="image/four.png" alt=""></div>
+				  <div class="col-md-4" data="five"><img src="image/five.png" alt=""></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">温馨提示~</h4>
+	      </div>
+	      <div class="modal-body">
+	        <p>是否需要保存?&hellip;</p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">不保存</button>
+	        <button type="button" class="btn btn-primary">保存</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+	<div class="apartment-layout-compass" style="pointer-events: auto; position: absolute; left: 340px; top: 60px;">
+		<div class="compass-img" style="cursor: inherit;"></div>
+		<div class="compass-active-img" style="cursor: inherit;"></div>
+	</div>
+	<script type ="text/javascript" src="js/build/ion.rangeSlider.js"></script>
+	<script type ="text/javascript" src="js/undoAndRedo.js"></script>
+	<script  type="text/javascript" src="js/utils/algorithms.js"></script>	
+	<script  type="text/javascript" src="js/common.js"></script>	
+	<script  type="text/javascript" src="js/utils/utils.js"></script>
+	<script type ="text/javascript" src="js/html_ui.js"></script>
+	<script type ="text/javascript" src="js/room.js"></script>
+	<script type ="text/javascript" src="js/testing.js"></script>
+	<script  type="text/javascript" src="js/drawCanvas.js"></script>
+	<script  type="text/javascript" src="js/3d.js"></script>
+	<script  type="text/javascript" src="js/draw.js"></script>
+	
+	<script  type="text/javascript">
+
+	</script>
+</body>
+</html>
